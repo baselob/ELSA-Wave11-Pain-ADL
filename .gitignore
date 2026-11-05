@@ -1,0 +1,17 @@
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# ELSA data files - do not upload to Git
+data_raw/
+data_processed/
+
+# Exclude restricted ELSA participant-level data
+Raw data/
+UKDA-5050-stata/
+outputs/
+
+# Generated R Markdown output
+HDS_M1_ELSA_Pain.html

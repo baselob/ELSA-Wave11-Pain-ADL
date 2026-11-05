@@ -1,0 +1,799 @@
+---
+title: 'UntitledELSA: Pain Severity and Functional Limitation'
+author: "Basel Obeidat"
+date: "2026-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(haven)
+library(dplyr)
+
+# Import ELSA Wave 11 data
+elsa <- read_dta("Raw data/wave_11_elsa_data_eul.dta")
+
+# Check the dataset dimensions
+dim(elsa)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Identification of pain and functional limitation variables
+
+```{r}
+
+# Identify variables related to pain and ADL
+
+pain_vars <- names(elsa)[
+  grepl("pain", names(elsa), ignore.case = TRUE)
+]
+
+adl_vars <- names(elsa)[
+  grepl("^headl", names(elsa), ignore.case = TRUE)
+]
+
+# Display matching variable names
+pain_vars
+adl_vars
+
+```
+
+## Examination of variable labels and coding
+
+```{r}
+
+# Select candidate pain and basic ADL variables
+
+candidate_vars <- c(
+  "hepain",
+  "hepaa",
+  "headldr",
+  "headlwa",
+  "headlba",
+  "headlea",
+  "headlbe",
+  "headlwc"
+)
+
+# Check which variables are present
+candidate_vars %in% names(elsa)
+
+# Display descriptive variable labels
+data.frame(
+  variable = candidate_vars,
+  label = sapply(
+    elsa[candidate_vars],
+    function(x) attr(x, "label")
+  )
+)
+
+# Examine response categories and frequencies
+for (v in candidate_vars) {
+  cat("\n\nVARIABLE:", v, "\n")
+  print(
+    table(
+      haven::as_factor(elsa[[v]]),
+      useNA = "ifany"
+    )
+  )
+}
+
+```
+
+## Validation of pain questionnaire routing
+
+```{r}
+
+# Cross-tabulate pain screening and severity
+
+pain_routing <- table(
+  Pain = haven::as_factor(elsa$hepain),
+  Severity = haven::as_factor(elsa$hepaa),
+  useNA = "ifany"
+)
+
+knitr::kable(
+  pain_routing,
+  caption = "Pain screening responses by pain severity"
+)
+# Display the cross-tabulation in the Console
+print(pain_routing)
+
+```
+
+## Derivation of the pain severity phenotype
+
+```{r}
+
+# Convert labelled Stata responses to readable categories
+pain_screen <- as.character(haven::as_factor(elsa$hepain))
+pain_severity <- as.character(haven::as_factor(elsa$hepaa))
+
+# Derive an ordered pain severity phenotype
+elsa <- elsa %>%
+  mutate(
+    pain_category = case_when(
+      pain_screen == "No" &
+        pain_severity == "Not applicable" ~ "No pain",
+      pain_screen == "Yes" &
+        pain_severity == "Mild" ~ "Mild",
+      pain_screen == "Yes" &
+        pain_severity == "Moderate" ~ "Moderate",
+      pain_screen == "Yes" &
+        pain_severity == "Severe" ~ "Severe",
+      TRUE ~ NA_character_
+    ),
+    pain_category = factor(
+      pain_category,
+      levels = c("No pain", "Mild", "Moderate", "Severe"),
+      ordered = TRUE
+    )
+  )
+
+# Display the derived phenotype distribution
+pain_summary <- table(
+  elsa$pain_category,
+  useNA = "ifany"
+)
+
+knitr::kable(
+  pain_summary,
+  caption = "Distribution of derived pain severity phenotype"
+)
+
+print(pain_summary)
+
+```
+
+## Assessment of activities of daily living variables
+
+```{r}
+
+
+# Define the six basic ADL variables
+adl_vars <- c(
+  "headldr",  # Dressing
+  "headlwa",  # Walking across a room
+  "headlba",  # Bathing or showering
+  "headlea",  # Eating
+  "headlbe",  # Getting in/out of bed
+  "headlwc"   # Using the toilet
+)
+
+# Convert Stata labels to readable responses
+adl_data <- elsa %>%
+  select(all_of(adl_vars)) %>%
+  mutate(across(
+    everything(),
+    ~ as.character(haven::as_factor(.x))
+  ))
+
+# Convert to a matrix for row-wise calculations
+adl_matrix <- as.matrix(adl_data)
+
+# Count ADL difficulties reported by each participant
+adl_mentioned <- rowSums(
+  adl_matrix == "Mentioned",
+  na.rm = TRUE
+)
+
+# Identify invalid or non-substantive responses
+valid_adl <- matrix(
+  adl_matrix %in% c("Mentioned", "Not mentioned"),
+  nrow = nrow(adl_matrix),
+  ncol = ncol(adl_matrix)
+)
+
+adl_invalid <- rowSums(!valid_adl) > 0
+
+# Summarise ADL classifications
+adl_summary <- data.frame(
+  classification = c(
+    "No ADL difficulties",
+    "One or more ADL difficulties",
+    "Any non-substantive ADL response"
+  ),
+  n = c(
+    sum(adl_mentioned == 0 & !adl_invalid),
+    sum(adl_mentioned >= 1 & !adl_invalid),
+    sum(adl_invalid)
+  )
+)
+
+# Display results
+knitr::kable(
+  adl_summary,
+  caption = "Preliminary classification of ADL responses"
+)
+
+print(adl_summary)
+
+# Validate that all participants are accounted for
+stopifnot(sum(adl_summary$n) == nrow(elsa))
+
+
+```
+
+## Derivation and validation of the ADL phenotype
+
+```{r}
+
+# Create provisional binary ADL outcome
+elsa$adl_limitation <- ifelse(
+  adl_invalid,
+  NA_integer_,
+  ifelse(adl_mentioned >= 1, 1L, 0L)
+)
+
+# Check the distribution
+adl_check <- table(
+  elsa$adl_limitation,
+  useNA = "ifany"
+)
+
+print(adl_check)
+
+# Validate expected counts
+stopifnot(
+  sum(elsa$adl_limitation == 0, na.rm = TRUE) == 6468,
+  sum(elsa$adl_limitation == 1, na.rm = TRUE) == 1368,
+  sum(is.na(elsa$adl_limitation)) == 6
+)
+
+# Cross-tabulate pain severity and ADL limitation
+pain_adl_table <- table(
+  Pain = elsa$pain_category,
+  ADL = elsa$adl_limitation,
+  useNA = "ifany"
+)
+
+print(pain_adl_table)
+
+```
+
+## Identification of participant identifiers and demographic variables
+
+```{r}
+
+# Search for potential participant identifiers,
+# demographic variables and survey weights
+
+candidate_names <- names(elsa)[
+  grepl(
+    "^(idauniq|id|age|sex|gender|wght|weight|wt)",
+    names(elsa),
+    ignore.case = TRUE
+  )
+]
+
+# Display variable names and their descriptive labels
+candidate_dictionary <- data.frame(
+  variable = candidate_names,
+  label = vapply(
+    elsa[candidate_names],
+    function(x) {
+      lab <- attr(x, "label")
+      if (is.null(lab)) NA_character_
+      else as.character(lab)[1]
+    },
+    character(1)
+  )
+)
+
+# Show candidate variables and labels
+print(candidate_dictionary, row.names = FALSE)
+
+```
+
+## Validation of participant identifiers
+
+```{r}
+
+# Check participant identifier completeness
+missing_ids <- sum(is.na(elsa$idauniq))
+
+# Count unique participant identifiers
+unique_ids <- dplyr::n_distinct(
+  elsa$idauniq,
+  na.rm = TRUE
+)
+
+# Count duplicated participant identifiers
+duplicate_ids <- sum(
+  duplicated(elsa$idauniq) & !is.na(elsa$idauniq)
+)
+
+# Display validation results
+id_validation <- data.frame(
+  check = c(
+    "Total records",
+    "Missing participant IDs",
+    "Unique participant IDs",
+    "Duplicate participant IDs"
+  ),
+  n = c(
+    nrow(elsa),
+    missing_ids,
+    unique_ids,
+    duplicate_ids
+  )
+)
+
+print(id_validation)
+
+```
+
+## Identification of demographic variables using metadata
+
+```{r}
+
+# Extract descriptive labels from all variables
+variable_labels <- vapply(
+  elsa,
+  function(x) {
+    lab <- attr(x, "label")
+    if (is.null(lab)) {
+      NA_character_
+    } else {
+      as.character(lab)[1]
+    }
+  },
+  character(1)
+)
+
+# Search for age and sex in variable descriptions
+demographic_matches <- grepl(
+  "\\bage\\b|\\bsex\\b|\\bgender\\b",
+  variable_labels,
+  ignore.case = TRUE
+)
+
+# Create a searchable metadata table
+demographic_dictionary <- data.frame(
+  variable = names(elsa)[demographic_matches],
+  label = variable_labels[demographic_matches]
+)
+
+# Display the first 40 matches
+print(
+  head(demographic_dictionary, 40),
+  row.names = FALSE
+)
+
+# Count all matches
+cat("Total matching variables:",
+    nrow(demographic_dictionary), "\n")
+
+# Search for labels likely to describe the respondent
+respondent_matches <- demographic_dictionary %>%
+  filter(
+    grepl(
+      "respondent|age at interview|age in years|age at last birthday|sex of individual|sex of respondent",
+      label,
+      ignore.case = TRUE
+    )
+  )
+
+# Display all matching variables
+print(respondent_matches, row.names = FALSE)
+
+cat(
+  "Number of matches:",
+  nrow(respondent_matches),
+  "\n"
+)
+
+
+```
+```{r}
+
+# Search all variable names and labels for demographic clues
+demographic_search <- data.frame(
+  variable = names(elsa),
+  label = unname(variable_labels)
+)
+
+demographic_search <- demographic_search %>%
+  filter(
+    grepl(
+      "^(ind|age|sex|gender|dhsex|dhage|w11|dem)",
+      variable,
+      ignore.case = TRUE
+    ) |
+    grepl(
+      "date of birth|year of birth|birth year|respondent.*sex|respondent.*age|individual.*age|individual.*sex",
+      label,
+      ignore.case = TRUE
+    )
+  )
+
+print(demographic_search, row.names = FALSE)
+
+```
+## Assessment of age and sex variables
+```{r}
+
+# Examine respondent age
+summary(elsa$indager)
+
+# Examine respondent sex categories
+table(
+  haven::as_factor(elsa$indsex),
+  useNA = "ifany"
+)
+
+# Check missing values
+sum(is.na(elsa$indager))
+sum(is.na(elsa$indsex))
+
+# Examine cross-sectional survey weights
+summary(elsa$w11xwgt)
+
+```
+## Investigation of special age codes
+```{r}
+
+# Display the labels associated with age values
+attr(elsa$indager, "labels")
+
+# Count all negative age values
+table(
+  elsa$indager[elsa$indager < 0],
+  useNA = "ifany"
+)
+
+# Examine the age distribution excluding negative codes
+summary(elsa$indager[elsa$indager >= 0])
+
+```
+## Derivation and validation of cleaned age
+```{r}
+
+# Create cleaned respondent age
+elsa <- elsa %>%
+  mutate(
+    age_clean = case_when(
+      indager == -7 ~ 90,
+      indager %in% c(-9, -8, -1) ~ NA_real_,
+      indager >= 0 ~ as.numeric(indager),
+      TRUE ~ NA_real_
+    )
+  )
+
+# Examine cleaned age distribution
+summary(elsa$age_clean)
+
+# Check missing values
+sum(is.na(elsa$age_clean))
+
+# Confirm that all 140 respondents aged 90+ are retained
+sum(elsa$age_clean == 90, na.rm = TRUE)
+
+# Validate the recoding
+stopifnot(
+  sum(elsa$age_clean == 90, na.rm = TRUE) == 140,
+  all(
+    elsa$age_clean[!is.na(elsa$age_clean)] >= 0
+  )
+)
+
+```
+## Assessment of cross-sectional survey weight availability
+```{r}
+
+# Identify participants with valid pain and ADL data
+elsa <- elsa %>%
+  mutate(
+    eligible_pain_adl =
+      !is.na(pain_category) &
+      !is.na(adl_limitation)
+  )
+
+# Cross-tabulate analytical eligibility and weight availability
+weight_availability <- table(
+  Eligible = elsa$eligible_pain_adl,
+  Weight_missing = is.na(elsa$w11xwgt)
+)
+
+print(weight_availability)
+
+# Check whether available weights are positive
+summary(elsa$w11xwgt)
+
+sum(
+  elsa$w11xwgt <= 0,
+  na.rm = TRUE
+)
+
+```
+## Validation of survey weights in the analytical sample
+```{r}
+
+# Classify cross-sectional weight availability
+elsa <- elsa %>%
+  mutate(
+    weight_status = case_when(
+      is.na(w11xwgt) ~ "Missing",
+      w11xwgt == 0 ~ "Zero",
+      w11xwgt > 0 ~ "Positive",
+      TRUE ~ "Negative"
+    )
+  )
+
+# Cross-tabulate eligibility and weight status
+weight_status_table <- table(
+  Eligible = elsa$eligible_pain_adl,
+  Weight_status = elsa$weight_status
+)
+
+print(weight_status_table)
+
+# Validate that all records are accounted for
+stopifnot(
+  sum(weight_status_table) == nrow(elsa)
+)
+
+```
+## Survey weight availability by pain severity
+```{r}
+
+# Restrict to participants with valid pain and ADL data
+eligible_data <- elsa %>%
+  filter(eligible_pain_adl)
+
+# Cross-tabulate pain severity against weight status
+pain_weight_table <- table(
+  Pain = eligible_data$pain_category,
+  Weight = eligible_data$weight_status
+)
+
+print(pain_weight_table)
+
+# Calculate percentage with positive weights
+positive_weight_pct <- prop.table(
+  pain_weight_table,
+  margin = 1
+)[, "Positive"] * 100
+
+print(round(positive_weight_pct, 1))
+
+```
+## Survey weight availability by ADL limitation
+```{r}
+
+# Cross-tabulate ADL limitation and survey weight status
+adl_weight_table <- table(
+  ADL = eligible_data$adl_limitation,
+  Weight = eligible_data$weight_status
+)
+
+print(adl_weight_table)
+
+# Percentage with positive weights within each ADL group
+adl_positive_pct <- prop.table(
+  adl_weight_table,
+  margin = 1
+)[, "Positive"] * 100
+
+print(round(adl_positive_pct, 1))
+
+```
+## Validation of ADL questionnaire responses
+```{r}
+
+# Examine the questionnaire's explicit "None of these" response
+table(
+  haven::as_factor(elsa$headl96),
+  useNA = "ifany"
+)
+
+# Compare "None of these" with our derived ADL outcome
+table(
+  ADL_limitation = elsa$adl_limitation,
+  None_of_these = haven::as_factor(elsa$headl96),
+  useNA = "ifany"
+)
+
+# Convert explicit "None of these" responses to labels
+none_response <- as.character(
+  haven::as_factor(elsa$headl96)
+)
+
+# Validate consistency with the derived basic ADL outcome
+stopifnot(
+  sum(
+    elsa$adl_limitation == 1 &
+      none_response == "Mentioned",
+    na.rm = TRUE
+  ) == 0,
+
+  sum(
+    elsa$adl_limitation == 0 &
+      none_response == "Mentioned",
+    na.rm = TRUE
+  ) == 5907,
+
+  sum(is.na(elsa$adl_limitation)) == 6
+)
+
+cat("ADL consistency validation: PASSED\n")
+
+```
+## Construction of the analysis-ready dataset
+```{r}
+
+# Construct the analysis-ready dataset
+ard <- elsa %>%
+  filter(eligible_pain_adl) %>%
+  transmute(
+    participant_id = idauniq,
+    pain_category = pain_category,
+    adl_limitation = adl_limitation,
+    age = age_clean,
+    sex = haven::as_factor(indsex),
+    cross_sectional_weight = w11xwgt
+  )
+
+# Check the dimensions
+dim(ard)
+
+# Check missingness in each variable
+colSums(is.na(ard))
+
+# Check participant identifier uniqueness
+stopifnot(
+  nrow(ard) == 7395,
+  !anyNA(ard$participant_id),
+  dplyr::n_distinct(ard$participant_id) == nrow(ard),
+  !anyNA(ard$pain_category),
+  !anyNA(ard$adl_limitation),
+  !anyNA(ard$age),
+  !anyNA(ard$sex)
+)
+
+cat("ARD construction and validation: PASSED\n")
+
+```
+## Final validation of analysis-ready variable structure
+```{r}
+
+# Examine variable types and structure
+str(ard)
+
+# Check the distribution of pain categories
+table(ard$pain_category, useNA = "ifany")
+
+# Check the distribution of ADL limitation
+table(ard$adl_limitation, useNA = "ifany")
+
+# Check sex categories
+table(ard$sex, useNA = "ifany")
+
+# Validate permitted values
+stopifnot(
+  all(ard$adl_limitation %in% c(0, 1)),
+  all(ard$age >= 0 & ard$age <= 90),
+ 
+all(
+  as.character(ard$pain_category) %in%
+    c("Not often troubled by pain",
+      "Mild", "Moderate", "Severe")
+)
+
+  )
+
+cat("ARD variable structure validation: PASSED\n")
+
+# Convert the ARD from a tibble to a standard data frame
+ard <- as.data.frame(ard)
+
+# Remove unused sex categories
+ard$sex <- droplevels(ard$sex)
+
+# Confirm the object type
+class(ard)
+
+# Inspect the structure
+str(ard)
+
+```
+```{r}
+levels(ard$sex)
+table(ard$sex)
+```
+## Export the analysis-ready dataset
+```{r}
+
+# Create an output folder if it does not exist
+dir.create("outputs", showWarnings = FALSE)
+
+# Save the validated analysis-ready dataset
+saveRDS(ard, file = "outputs/ELSA_W11_pain_ADL_ARD.rds")
+
+# Read the saved file back to verify it
+ard_check <- readRDS("outputs/ELSA_W11_pain_ADL_ARD.rds")
+
+# Confirm the saved dataset matches the original
+stopifnot(
+  identical(ard, ard_check),
+  is.data.frame(ard_check),
+  nrow(ard_check) == 7395
+)
+
+cat("ARD saved and verified successfully\n")
+
+```
+## Analysis-ready dataset documentation
+```{r}
+
+# Create a data dictionary for the analysis-ready dataset
+data_dictionary <- data.frame(
+  variable = c(
+    "participant_id",
+    "pain_category",
+    "adl_limitation",
+    "age",
+    "sex",
+    "cross_sectional_weight"
+  ),
+  source = c(
+    "idauniq",
+    "hepain, hepaa",
+    "headldr, headlwa, headlba, headlea, headlbe, headlwc",
+    "indager",
+    "indsex",
+    "w11xwgt"
+  ),
+  description = c(
+    "Unique cross-wave participant identifier",
+    "Severity of frequently troublesome pain",
+    "Difficulty with at least one of six basic ADLs",
+    "Age in years, with ages 90 and above coded as 90",
+    "Definitive recorded sex",
+    "Wave 11 cross-sectional survey weight"
+  ),
+  stringsAsFactors = FALSE
+)
+
+# Display the dictionary
+print(data_dictionary, row.names = FALSE)
+
+```
+```{r}
+
+# Document coding and missing-data rules
+data_dictionary$coding <- c(
+  "Unique numeric identifier",
+  "Ordered: No pain, Mild, Moderate, Severe",
+  "0 = No basic ADL difficulty; 1 = At least one",
+  "Age in years; 90 represents age 90 or above",
+  "Male or Female",
+  "Numeric survey weight"
+)
+
+data_dictionary$missing_rule <- c(
+  "No missing values in ARD",
+  "Refused, don't know and not applicable excluded",
+  "Refused and don't know coded as NA",
+  "No missing values in ARD; age 90+ top-coded",
+  "No missing values in ARD",
+  "Missing and zero weights retained"
+)
+
+# Display the expanded dictionary
+print(data_dictionary, row.names = FALSE)
+
+```
+```{r}
+
+# Correct the reference pain category label
+levels(ard$pain_category)[
+  levels(ard$pain_category) == "No pain"
+] <- "Not often troubled by pain"
+
+# Verify the revised categories
+table(ard$pain_category)
+
+```
+
