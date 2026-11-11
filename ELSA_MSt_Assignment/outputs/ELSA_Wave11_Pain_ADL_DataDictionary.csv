@@ -1,0 +1,7 @@
+"Variable","Source","Type","Definition_and_coding","Missing_data_rule"
+"participant_id","idauniq","Numeric identifier","Unique ELSA participant identifier","Exclude missing identifiers"
+"pain_category","hepain; hepaa","Categorical","Not often troubled by pain; Mild; Moderate; Severe","Exclude invalid pain responses or incomplete severity"
+"adl_limitation","headldr; headlwa; headlba; headlea; headlbe; headlwc","Binary integer","1 = at least one reported ADL limitation; 0 = all six absent","Missing unless a positive ADL response is present or all six are zero"
+"age","indager","Numeric","Age in years; source code -7 recoded to 90 (90+)","No missing ages permitted in final asset"
+"sex","indsex","Categorical","Female; Male","No missing sex permitted in final asset"
+"cross_sectional_weight","w11xwgt","Numeric","Wave 11 cross-sectional survey weight; strictly positive","Exclude missing, zero or negative weights"
