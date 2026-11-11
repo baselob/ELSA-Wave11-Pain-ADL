@@ -1,0 +1,8 @@
+Raw data/
+UKDA-5050-stata/
+outputs/ELSA_Wave11_Pain_ADL_ARD.csv
+*.dta
+*.sav
+.Rhistory
+.RData
+.Rproj.user/
