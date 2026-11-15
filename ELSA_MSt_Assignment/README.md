@@ -38,6 +38,7 @@ MSt assignment ELSA/
 └── ELSA_MSt_Assignment/
     ├── Mst assignment.Rmd
     ├── README.md
+    ├── ELSA_Wave11_Pain_ADL_SYNTHETIC.csv
     └── outputs/
         ├── ELSA_Wave11_Pain_ADL_ARD.csv
         └── ELSA_Wave11_Pain_ADL_DataDictionary.csv
@@ -76,6 +77,9 @@ Expected dimensions: 6,169 participant records and six variables:
 **Data dictionary:** `ELSA_Wave11_Pain_ADL_DataDictionary.csv`
 
 Documents source variables, coding decisions and missing-data rules.
+
+**Synthetic demonstration dataset:** `ELSA_Wave11_Pain_ADL_SYNTHETIC.csv`
+A synthetic demonstration dataset is provided to illustrate the structure of the analysis-ready data. It contains no actual ELSA participant records and is not intended to reproduce the reported statistical results.
 
 **Technical report:** Knitted HTML document containing the methodology, validation checks, exploratory results and critical appraisal.
 

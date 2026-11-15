@@ -1,0 +1,251 @@
+"participant_id","pain_category","adl_limitation","age","sex","cross_sectional_weight"
+"SYN0001","Not often troubled by pain",0,75,"Female",2.065
+"SYN0002","Mild",0,64,"Female",1.626
+"SYN0003","Mild",0,72,"Male",1.242
+"SYN0004","Not often troubled by pain",0,64,"Male",0.402
+"SYN0005","Not often troubled by pain",0,76,"Male",2.793
+"SYN0006","Not often troubled by pain",0,50,"Male",1.027
+"SYN0007","Mild",0,64,"Male",2.438
+"SYN0008","Not often troubled by pain",0,55,"Female",2.092
+"SYN0009","Not often troubled by pain",0,57,"Female",1.171
+"SYN0010","Not often troubled by pain",0,86,"Female",2.846
+"SYN0011","Not often troubled by pain",0,85,"Female",1.832
+"SYN0012","Mild",1,66,"Male",1.99
+"SYN0013","Not often troubled by pain",0,83,"Female",1.514
+"SYN0014","Moderate",0,82,"Male",1.939
+"SYN0015","Not often troubled by pain",0,58,"Female",0.856
+"SYN0016","Moderate",0,53,"Female",0.734
+"SYN0017","Not often troubled by pain",0,62,"Male",0.269
+"SYN0018","Mild",0,84,"Male",0.93
+"SYN0019","Not often troubled by pain",0,77,"Male",0.316
+"SYN0020","Not often troubled by pain",0,67,"Male",1.318
+"SYN0021","Severe",1,68,"Male",0.772
+"SYN0022","Mild",1,88,"Female",1.544
+"SYN0023","Not often troubled by pain",0,81,"Male",1.844
+"SYN0024","Severe",1,89,"Male",0.734
+"SYN0025","Moderate",0,63,"Male",2.198
+"SYN0026","Not often troubled by pain",0,62,"Female",2.168
+"SYN0027","Not often troubled by pain",0,55,"Male",0.899
+"SYN0028","Not often troubled by pain",0,59,"Female",1.858
+"SYN0029","Moderate",0,73,"Male",2.268
+"SYN0030","Not often troubled by pain",0,66,"Female",0.716
+"SYN0031","Not often troubled by pain",0,72,"Male",2.159
+"SYN0032","Not often troubled by pain",0,71,"Male",1.731
+"SYN0033","Not often troubled by pain",1,80,"Female",1.242
+"SYN0034","Moderate",0,77,"Male",0.329
+"SYN0035","Moderate",0,85,"Male",1.138
+"SYN0036","Not often troubled by pain",0,71,"Male",2.063
+"SYN0037","Moderate",0,64,"Female",2.263
+"SYN0038","Not often troubled by pain",0,54,"Female",1.298
+"SYN0039","Mild",0,70,"Female",0.543
+"SYN0040","Not often troubled by pain",0,90,"Male",0.342
+"SYN0041","Not often troubled by pain",0,88,"Male",0.529
+"SYN0042","Severe",0,56,"Male",2.372
+"SYN0043","Mild",0,83,"Female",2.908
+"SYN0044","Moderate",0,66,"Female",1.909
+"SYN0045","Not often troubled by pain",0,76,"Female",2.338
+"SYN0046","Not often troubled by pain",0,51,"Male",2.695
+"SYN0047","Not often troubled by pain",0,69,"Female",2.893
+"SYN0048","Mild",1,81,"Male",1.497
+"SYN0049","Not often troubled by pain",0,52,"Male",1.152
+"SYN0050","Not often troubled by pain",0,77,"Male",1.46
+"SYN0051","Severe",0,76,"Male",2.338
+"SYN0052","Mild",1,85,"Male",2.4
+"SYN0053","Not often troubled by pain",0,74,"Male",2.301
+"SYN0054","Not often troubled by pain",0,60,"Male",1.175
+"SYN0055","Not often troubled by pain",0,51,"Female",2.659
+"SYN0056","Mild",0,88,"Male",0.629
+"SYN0057","Not often troubled by pain",0,62,"Female",1.247
+"SYN0058","Not often troubled by pain",0,84,"Female",2.371
+"SYN0059","Not often troubled by pain",0,65,"Male",1.541
+"SYN0060","Moderate",0,65,"Male",2.308
+"SYN0061","Mild",0,64,"Male",2.572
+"SYN0062","Moderate",1,53,"Male",1.497
+"SYN0063","Not often troubled by pain",0,62,"Female",2.965
+"SYN0064","Not often troubled by pain",0,68,"Male",2.137
+"SYN0065","Not often troubled by pain",0,72,"Male",2.295
+"SYN0066","Moderate",0,55,"Female",0.818
+"SYN0067","Not often troubled by pain",0,85,"Female",0.422
+"SYN0068","Not often troubled by pain",0,87,"Female",0.87
+"SYN0069","Moderate",0,59,"Female",1.236
+"SYN0070","Not often troubled by pain",0,79,"Male",2.968
+"SYN0071","Severe",1,60,"Female",2.155
+"SYN0072","Moderate",0,61,"Male",0.459
+"SYN0073","Mild",1,63,"Female",0.507
+"SYN0074","Not often troubled by pain",0,81,"Female",2.553
+"SYN0075","Mild",0,89,"Male",1.622
+"SYN0076","Mild",0,54,"Male",1.835
+"SYN0077","Not often troubled by pain",0,69,"Male",1.58
+"SYN0078","Mild",0,70,"Female",2.155
+"SYN0079","Moderate",0,50,"Male",1.433
+"SYN0080","Mild",0,53,"Female",1.675
+"SYN0081","Not often troubled by pain",0,90,"Male",1.602
+"SYN0082","Severe",0,51,"Female",2.72
+"SYN0083","Not often troubled by pain",0,78,"Male",1.719
+"SYN0084","Not often troubled by pain",0,72,"Male",2.3
+"SYN0085","Not often troubled by pain",0,80,"Female",1.883
+"SYN0086","Not often troubled by pain",0,51,"Female",1.194
+"SYN0087","Not often troubled by pain",0,61,"Male",1.891
+"SYN0088","Moderate",0,61,"Female",1.012
+"SYN0089","Moderate",0,78,"Male",1.472
+"SYN0090","Mild",1,88,"Female",1.326
+"SYN0091","Not often troubled by pain",0,72,"Male",1.027
+"SYN0092","Moderate",0,75,"Female",2.259
+"SYN0093","Not often troubled by pain",0,62,"Female",0.397
+"SYN0094","Not often troubled by pain",0,84,"Female",2.989
+"SYN0095","Not often troubled by pain",0,72,"Male",0.622
+"SYN0096","Not often troubled by pain",0,52,"Male",1.276
+"SYN0097","Mild",1,69,"Male",1.506
+"SYN0098","Mild",0,54,"Female",0.63
+"SYN0099","Moderate",0,54,"Male",0.927
+"SYN0100","Moderate",0,55,"Female",0.831
+"SYN0101","Not often troubled by pain",1,64,"Female",2.366
+"SYN0102","Mild",0,51,"Male",1.822
+"SYN0103","Moderate",0,88,"Female",1.154
+"SYN0104","Mild",0,55,"Male",0.618
+"SYN0105","Moderate",1,82,"Female",2.472
+"SYN0106","Not often troubled by pain",0,61,"Male",2.236
+"SYN0107","Severe",0,68,"Male",2.543
+"SYN0108","Not often troubled by pain",0,77,"Female",0.413
+"SYN0109","Not often troubled by pain",0,59,"Male",2.059
+"SYN0110","Not often troubled by pain",0,73,"Female",1.596
+"SYN0111","Moderate",0,86,"Female",2.439
+"SYN0112","Not often troubled by pain",0,79,"Male",1.333
+"SYN0113","Not often troubled by pain",0,58,"Male",1.133
+"SYN0114","Not often troubled by pain",0,90,"Female",1.111
+"SYN0115","Moderate",0,81,"Male",1.209
+"SYN0116","Not often troubled by pain",0,70,"Female",1.282
+"SYN0117","Not often troubled by pain",0,57,"Male",0.399
+"SYN0118","Not often troubled by pain",0,60,"Male",2.937
+"SYN0119","Moderate",0,58,"Female",1.649
+"SYN0120","Not often troubled by pain",0,60,"Male",2.524
+"SYN0121","Severe",0,56,"Female",1.269
+"SYN0122","Moderate",0,86,"Male",1.409
+"SYN0123","Not often troubled by pain",0,79,"Male",0.283
+"SYN0124","Not often troubled by pain",0,84,"Female",2.992
+"SYN0125","Not often troubled by pain",0,77,"Female",1.308
+"SYN0126","Severe",0,51,"Female",1.966
+"SYN0127","Moderate",0,56,"Female",2.509
+"SYN0128","Not often troubled by pain",0,68,"Female",0.448
+"SYN0129","Not often troubled by pain",0,74,"Female",1.977
+"SYN0130","Severe",1,89,"Male",1.032
+"SYN0131","Not often troubled by pain",0,58,"Male",0.523
+"SYN0132","Not often troubled by pain",0,79,"Female",2.539
+"SYN0133","Not often troubled by pain",0,68,"Male",1.399
+"SYN0134","Not often troubled by pain",0,74,"Male",1.008
+"SYN0135","Mild",0,56,"Male",2.53
+"SYN0136","Severe",0,69,"Male",2.834
+"SYN0137","Not often troubled by pain",0,85,"Male",0.52
+"SYN0138","Not often troubled by pain",0,60,"Female",0.665
+"SYN0139","Not often troubled by pain",0,69,"Female",1.853
+"SYN0140","Not often troubled by pain",0,80,"Female",2.548
+"SYN0141","Mild",1,71,"Male",1.796
+"SYN0142","Mild",0,77,"Female",1.773
+"SYN0143","Not often troubled by pain",0,87,"Female",0.697
+"SYN0144","Not often troubled by pain",0,58,"Female",0.705
+"SYN0145","Not often troubled by pain",0,84,"Male",1.033
+"SYN0146","Not often troubled by pain",0,56,"Male",1.549
+"SYN0147","Not often troubled by pain",0,50,"Male",2.625
+"SYN0148","Moderate",1,78,"Female",2.64
+"SYN0149","Mild",0,57,"Female",0.646
+"SYN0150","Not often troubled by pain",0,71,"Male",0.621
+"SYN0151","Not often troubled by pain",0,80,"Female",1.009
+"SYN0152","Not often troubled by pain",0,72,"Male",1.726
+"SYN0153","Moderate",0,56,"Male",1.855
+"SYN0154","Moderate",0,60,"Male",1.554
+"SYN0155","Not often troubled by pain",0,60,"Male",0.86
+"SYN0156","Moderate",0,59,"Female",2.169
+"SYN0157","Mild",0,63,"Female",2.413
+"SYN0158","Not often troubled by pain",0,88,"Male",0.341
+"SYN0159","Not often troubled by pain",0,78,"Female",2.363
+"SYN0160","Not often troubled by pain",0,87,"Male",2.489
+"SYN0161","Mild",0,66,"Female",0.755
+"SYN0162","Not often troubled by pain",0,55,"Male",1.42
+"SYN0163","Not often troubled by pain",0,71,"Male",0.669
+"SYN0164","Not often troubled by pain",0,85,"Male",0.254
+"SYN0165","Not often troubled by pain",0,73,"Male",1.202
+"SYN0166","Not often troubled by pain",0,60,"Female",0.271
+"SYN0167","Not often troubled by pain",0,70,"Female",2.775
+"SYN0168","Not often troubled by pain",0,87,"Male",2.737
+"SYN0169","Moderate",0,53,"Male",0.753
+"SYN0170","Not often troubled by pain",0,57,"Female",1.232
+"SYN0171","Not often troubled by pain",0,73,"Male",0.842
+"SYN0172","Moderate",1,67,"Female",0.468
+"SYN0173","Mild",0,56,"Male",2.798
+"SYN0174","Moderate",0,61,"Female",1.325
+"SYN0175","Moderate",0,82,"Male",1.067
+"SYN0176","Not often troubled by pain",0,66,"Male",0.25
+"SYN0177","Moderate",1,84,"Male",1.045
+"SYN0178","Not often troubled by pain",0,83,"Female",2.271
+"SYN0179","Not often troubled by pain",0,63,"Female",0.516
+"SYN0180","Not often troubled by pain",0,61,"Male",1.848
+"SYN0181","Severe",0,57,"Male",1.436
+"SYN0182","Not often troubled by pain",0,66,"Female",1.735
+"SYN0183","Not often troubled by pain",0,86,"Male",0.76
+"SYN0184","Not often troubled by pain",0,75,"Male",0.813
+"SYN0185","Moderate",0,79,"Male",0.652
+"SYN0186","Mild",0,90,"Female",1.253
+"SYN0187","Not often troubled by pain",0,77,"Female",2.566
+"SYN0188","Moderate",0,57,"Female",1.973
+"SYN0189","Not often troubled by pain",1,60,"Female",2.206
+"SYN0190","Not often troubled by pain",0,77,"Female",2.633
+"SYN0191","Mild",1,75,"Female",0.666
+"SYN0192","Not often troubled by pain",0,60,"Male",1.446
+"SYN0193","Not often troubled by pain",0,66,"Female",1.733
+"SYN0194","Not often troubled by pain",0,67,"Male",0.855
+"SYN0195","Not often troubled by pain",0,68,"Male",2.346
+"SYN0196","Not often troubled by pain",0,86,"Male",2.785
+"SYN0197","Not often troubled by pain",0,81,"Female",0.607
+"SYN0198","Mild",0,88,"Female",2.934
+"SYN0199","Severe",1,76,"Male",2.247
+"SYN0200","Not often troubled by pain",0,78,"Female",1.464
+"SYN0201","Not often troubled by pain",0,64,"Female",2.806
+"SYN0202","Mild",0,56,"Female",2.826
+"SYN0203","Not often troubled by pain",0,85,"Female",0.677
+"SYN0204","Moderate",1,69,"Female",0.594
+"SYN0205","Not often troubled by pain",0,51,"Female",1.907
+"SYN0206","Not often troubled by pain",1,56,"Female",2.134
+"SYN0207","Not often troubled by pain",0,79,"Female",0.254
+"SYN0208","Not often troubled by pain",0,65,"Male",1.495
+"SYN0209","Severe",0,75,"Female",1
+"SYN0210","Not often troubled by pain",0,71,"Male",1.105
+"SYN0211","Moderate",0,66,"Female",1.439
+"SYN0212","Not often troubled by pain",0,68,"Male",0.292
+"SYN0213","Not often troubled by pain",0,72,"Female",0.377
+"SYN0214","Not often troubled by pain",1,73,"Male",1.698
+"SYN0215","Moderate",1,77,"Male",1.67
+"SYN0216","Not often troubled by pain",0,59,"Female",1.571
+"SYN0217","Severe",1,73,"Female",1.061
+"SYN0218","Mild",0,50,"Male",1.263
+"SYN0219","Not often troubled by pain",0,68,"Female",1.05
+"SYN0220","Not often troubled by pain",0,90,"Female",0.324
+"SYN0221","Not often troubled by pain",0,59,"Male",2.36
+"SYN0222","Moderate",0,80,"Male",1.006
+"SYN0223","Not often troubled by pain",0,59,"Female",0.395
+"SYN0224","Not often troubled by pain",1,80,"Male",2.952
+"SYN0225","Not often troubled by pain",0,85,"Female",1.3
+"SYN0226","Not often troubled by pain",0,66,"Female",0.591
+"SYN0227","Moderate",0,63,"Male",2.31
+"SYN0228","Not often troubled by pain",0,79,"Female",1.217
+"SYN0229","Moderate",0,61,"Male",2.386
+"SYN0230","Moderate",0,54,"Female",0.859
+"SYN0231","Not often troubled by pain",0,72,"Male",0.933
+"SYN0232","Not often troubled by pain",0,63,"Male",0.461
+"SYN0233","Moderate",0,79,"Female",1.456
+"SYN0234","Not often troubled by pain",1,90,"Female",2.08
+"SYN0235","Not often troubled by pain",0,90,"Male",0.362
+"SYN0236","Not often troubled by pain",0,87,"Female",2.716
+"SYN0237","Moderate",0,88,"Male",2.155
+"SYN0238","Moderate",0,53,"Female",0.351
+"SYN0239","Moderate",0,77,"Female",0.541
+"SYN0240","Severe",0,60,"Female",1.147
+"SYN0241","Not often troubled by pain",0,77,"Female",1.678
+"SYN0242","Not often troubled by pain",0,79,"Male",2.59
+"SYN0243","Mild",0,53,"Male",1.521
+"SYN0244","Not often troubled by pain",0,78,"Female",2.466
+"SYN0245","Severe",1,80,"Female",0.637
+"SYN0246","Not often troubled by pain",0,77,"Female",1.838
+"SYN0247","Moderate",1,58,"Male",1.32
+"SYN0248","Not often troubled by pain",0,82,"Male",0.343
+"SYN0249","Severe",1,66,"Female",1.693
+"SYN0250","Moderate",0,51,"Male",1.514

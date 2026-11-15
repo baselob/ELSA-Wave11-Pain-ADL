@@ -23,11 +23,11 @@ knitr::opts_chunk$set(
 
 **Objective:** To develop and validate an analysis-ready dataset (ARD) from the English Longitudinal Study of Ageing (ELSA) Wave 11 and demonstrate its suitability for examining pain severity and limitations in basic activities of daily living (ADLs).
 
-**Methods:** A reproducible R workflow was used for cohort selection, phenotype derivation and data-quality assessment using ELSA Wave 11 (Banks et al., 2026). Pain was classified into four categories, while ADL limitation was defined as difficulty with at least one of six activities. Validation included completeness, uniqueness, weight eligibility and independent phenotype checks. Weighted descriptive analyses and exploratory age- and sex-adjusted regression demonstrated analytical utility.
+**Methods:** A reproducible R workflow was used for cohort selection, phenotype derivation and data-quality assessment using ELSA Wave 11 (Banks et al., 2026). Pain was classified into four categories, and ADL limitation was defined as difficulty with at least one of six activities. Validation assessed completeness, uniqueness, weight eligibility and phenotype consistency. Weighted descriptive analyses and exploratory age- and sex-adjusted logistic regression were conducted.
 
-**Results:** Of 7,842 source records, 6,169 participants were retained. No missing analytical values, duplicate identifiers or phenotype mismatches were identified. Weighted ADL limitation prevalence increased from 5.4% among participants not often troubled by pain to 62.8% among those reporting severe pain. The association persisted after adjustment for age and sex.
+**Results:** Of 7,842 source records, 6,169 participants were retained. Validation identified no missing analytical values, duplicate identifiers or phenotype mismatches. Weighted ADL limitation prevalence increased from 5.4% among participants not often troubled by pain to 62.8% among those reporting severe pain. Severe pain was associated with substantially higher adjusted odds of ADL limitation (OR 31.00; 95% CI 24.64–38.99).
 
-**Conclusion:** The validated ARD provides a reproducible foundation for investigating pain-related functional limitations. Cross-sectional measurement, potential selection bias and incomplete survey-design adjustment restrict interpretation of the exploratory associations.
+**Conclusion:** A technically validated, reproducible ARD was developed, demonstrating its utility for investigating pain-related functional limitations. Cross-sectional measurement, potential selection bias and incomplete accounting for the complex survey design limit interpretation of the exploratory associations.
 
 # Introduction
 
@@ -35,9 +35,9 @@ Pain and functional disability are important challenges in ageing populations, w
 
 Longitudinal research has demonstrated associations between pain and subsequent functional decline. Using earlier waves of the English Longitudinal Study of Ageing (ELSA), Yiengprugsawan and Steptoe (2018) reported that persistent and multisite pain were associated with later ADL limitations and poorer physical performance. Makino et al. (2019) further demonstrated the importance of pain severity, finding that severe pain remained associated with incident functional disability after adjustment, whereas associations for moderate pain were attenuated. A systematic review of seven longitudinal studies involving 9,786 participants found associations between chronic pain and subsequent functional decline, but substantial heterogeneity in pain and ADL measurements prevented quantitative synthesis (Kawashima et al., 2025).
 
-These findings provide a rationale for examining graded pain severity in relation to basic ADL limitations. They also highlight a methodological challenge: estimates depend on how pain and functional limitations are defined, how incomplete or structurally missing responses are handled, and which participants are included. In secondary analyses, transparent phenotype construction and reproducible data processing are therefore essential for interpreting findings and comparing results across studies.
+Together, these findings support investigating pain severity in relation to functional limitations, while highlighting the importance of consistent outcome and exposure definitions. In secondary analyses, cohort selection, questionnaire routing and the treatment of incomplete responses can influence both the analytical population and the interpretation of findings. Transparent phenotype construction and reproducible data processing are therefore essential.
 
-ELSA offers a multidisciplinary resource for investigating health and functioning among adults aged 50 years and older in England (Steptoe et al., 2013). This project develops and validates an analysis-ready dataset (ARD) from ELSA Wave 11 to investigate the association between self-reported pain severity and limitations in six basic ADLs. The objectives are to establish explicit phenotype definitions, implement reproducible cohort selection and data transformations, independently verify the derived variables, and demonstrate the dataset's utility through descriptive and exploratory analyses.
+ELSA provides a multidisciplinary resource for investigating health and functioning among adults aged 50 years and older in England (Steptoe et al., 2013). This project develops and technically validates an analysis-ready dataset (ARD) from ELSA Wave 11, with a secondary exploratory analysis examining the association between self-reported pain severity and limitations in six basic ADLs. The objectives are to establish explicit phenotype definitions, implement reproducible cohort selection and data transformations, independently verify derived variables, and demonstrate the dataset's analytical utility.
 
 # Research Question and Analytical Requirements
 
@@ -59,7 +59,7 @@ To explore the association between pain severity and the prevalence of limitatio
 
 The English Longitudinal Study of Ageing (ELSA) examines health, social and economic circumstances among adults aged 50 years and older in England (Banks et al., 2026). Wave 11 was selected for its pain, functional, demographic and survey-weight variables.
 
-The dataset (7,842 records) was imported from Stata format using R's haven package. Original data were preserved, and transformations were documented in R Markdown. Cross-sectional weights were used for descriptive estimates, without modelling the full complex survey design.
+The source dataset comprised 7,842 records and was imported from Stata format using the `haven` package in R. Original data were preserved, and transformations were documented in R Markdown. Wave 11 cross-sectional weights were applied in descriptive analyses and exploratory regression; however, the full complex survey design was not incorporated.
 
 ```{r import-data}
 # Check that the source dataset is available
@@ -92,13 +92,11 @@ ELSA Wave 11 was accessed through the UK Data Service under its End User Licence
 
 ## Source Data Assessment
 
-ELSA Wave 11 variables were examined for distributions, completeness, response categories and special missing-value codes. Variable labels were reviewed to distinguish valid responses, non-response, structural inapplicability and disclosure-control codes.
+ELSA Wave 11 variables were assessed for distributions, completeness, valid response categories and special codes. Variable labels and questionnaire routing were examined to distinguish genuine missingness from structurally inapplicable responses and disclosure-controlled values.
 
-Pain severity was conditional on pain frequency; severity responses structurally inapplicable to participants not often troubled by pain were distinguished from genuine missingness to prevent unnecessary exclusions.
+Particular attention was given to the conditional relationship between pain frequency (`hepain`) and severity (`hepaa`), the age 90+ disclosure code (`indager = -7`), response validity across the six basic ADL variables, and the availability of eligible cross-sectional weights (`w11xwgt`).
 
-Age was derived from `indager`, with the disclosure-controlled code `-7` (90 years and older) recoded to 90, retaining these participants while acknowledging reduced precision.
-
-The six basic ADL variables were assessed for valid binary responses and missingness, and cross-sectional weights for missing, zero or negative values. Findings informed eligibility criteria, phenotype derivation and validation.
+These assessments informed the cohort-selection criteria, phenotype definitions and subsequent data-quality validation.
 
 ```{r assess-eligibility, include=FALSE}
 # Check required variables are present
@@ -121,11 +119,12 @@ table(
 
 
 ## Study Population and Eligibility
-A sequential selection process was applied to 7,842 ELSA Wave 11 records. Excluding 1,420 partner records yielded 6,422 core respondents; removal of 50 respondents with ineligible cross-sectional weights left 6,372. A further 203 were excluded for invalid pain-frequency responses (`hepain`; n = 201) or invalid severity responses among those reporting frequent pain (`hepaa = -8`; n = 2), producing a final cohort of 6,169.
 
-Respondents not often troubled by pain (`hepain = 2`) were retained despite structurally inapplicable severity responses, consistent with questionnaire routing.
+The study population was restricted to ELSA Wave 11 core respondents, excluding 1,420 partner records from the initial 7,842 observations to maintain a consistent target population (n = 6,422). A further 50 respondents were excluded because their cross-sectional weights were ineligible for the planned weighted analysis. Pain eligibility was then assessed, excluding 201 respondents with invalid pain-frequency responses (`hepain`) and two with invalid severity responses (`hepaa = -8`) where severity was required for classification. This produced a final analytical cohort of 6,169 participants.
 
-Complete-case pain eligibility and survey-weight restrictions may introduce selection bias and limit generalisability. Retained and excluded respondents were compared on observed characteristics, although these comparisons cannot establish whether missingness was random. All exclusions were documented in a reproducible cohort-selection flowchart.
+Respondents not often troubled by pain (`hepain = 2`) were retained regardless of their severity response, as the severity question was not applicable to them under the questionnaire's routing structure.
+
+These eligibility decisions ensured that the final cohort could be consistently classified and included in the weighted analysis. However, excluding respondents with invalid responses or weights may introduce selection bias. Retained and excluded respondents were therefore compared on observed characteristics, and the selection process was documented in a reproducible flowchart.
 
 ## Phenotype Definitions and Data Preparation
 
@@ -323,7 +322,7 @@ cohort_flow <- data.frame(
     "ELSA Wave 11 source records",
     "Excluded: partner respondents",
     "Core respondents remaining",
-    "Excluded: zero cross-sectional weight",
+    "Excluded: missing, zero or negative weight",
     "Weight-eligible core respondents",
     "Excluded: incomplete pain phenotype",
     "Additional exclusions: incomplete ADL phenotype",
@@ -333,8 +332,8 @@ cohort_flow <- data.frame(
     nrow(elsa),
     sum(elsa$corepartner == 0, na.rm = TRUE),
     sum(elsa$corepartner == 1, na.rm = TRUE),
-    sum(elsa$corepartner == 1 & !is.na(elsa$w11xwgt) &
-          elsa$w11xwgt == 0, na.rm = TRUE),
+    sum(elsa$corepartner == 1 &
+      (is.na(elsa$w11xwgt) | elsa$w11xwgt <= 0)),
     sum(eligible),
     sum(eligible & is.na(elsa$pain_category)),
     sum(eligible & !is.na(elsa$pain_category) &
@@ -459,34 +458,36 @@ ggplot(age_comparison, aes(x = Group, y = Age, fill = Group)) +
 
 ## Data Quality and Validation
 
-The final ARD contained 6,169 unique participants, with no duplicate identifiers, missing analytical values or non-positive survey weights (range: 0.062–8.833). Independent reconstruction of pain and ADL phenotypes showed complete agreement across all 6,169 participants, supporting technical consistency rather than clinical validity.
+Source-data assessment identified missing values and negative response codes requiring different treatment. The 1,420 missing cross-sectional weights corresponded to records excluded when restricting the analysis to core respondents. Negative pain-severity codes (`hepaa`; n = 4,653) included structurally inapplicable responses arising from questionnaire routing and should not all be interpreted as missing observations. Similarly, the disclosure-controlled age code (`indager = -7`) represented respondents aged 90 years or older and was retained through top-coding rather than treated as missing.
 
-Participants excluded for incomplete pain information were slightly older than those retained (mean 69.86 versus 68.87 years; Welch t-test, p = 0.226) and more frequently male (55.2% versus 42.4%; χ² = 12.50, p < 0.001).
+Following cohort selection and phenotype derivation, validation of the final 6,169-record ARD identified no missing analytical values, duplicate participant identifiers, non-positive weights or phenotype-classification mismatches. These checks establish technical completeness and internal consistency within the selected cohort, but do not eliminate the possibility of selection bias or measurement error.
 
-These exploratory, unweighted comparisons suggest possible selection bias but do not establish its extent or account for ELSA's complex survey design.
 
 ```{r missingness-analysis}
+source_variables <- c(
+  "hepain", "hepaa", "indager",
+  "indsex", "w11xwgt"
+)
+
 missingness <- data.frame(
-  Variable = c(
-    "Pain frequency",
-    "Pain severity",
-    "Age",
-    "Sex",
-    "Cross-sectional weight"
+  Variable = source_variables,
+  Missing_NA = sapply(
+    elsa[source_variables],
+    function(x) sum(is.na(x))
   ),
-  Missing_n = c(
-    sum(is.na(elsa$hepain)),
-    sum(is.na(elsa$hepaa)),
-    sum(is.na(elsa$indager)),
-    sum(is.na(elsa$indsex)),
-    sum(is.na(elsa$w11xwgt))
+  Negative_codes = sapply(
+    elsa[source_variables],
+    function(x) sum(x < 0, na.rm = TRUE)
   )
 )
 
-missingness$Missing_percent <- round(
-  100 * missingness$Missing_n / nrow(elsa), 1
+knitr::kable(
+  missingness,
+  row.names = FALSE,
+  caption = "Source-variable missingness and negative response codes"
 )
 ```
+
 ```{r ard-validation-checks, results='hide'}
 # Check missing values in the final dataset
 validation <- data.frame(
@@ -631,9 +632,7 @@ knitr::kable(
 ```
 
 
-## Characteristics of the Analysis-Ready Dataset
 
-The final analysis-ready dataset comprised 6,169 ELSA Wave 11 core participants, with a mean age of 68.9 years; 57.6% were female. Overall, 56.1% were not often troubled by pain, while 14.4%, 22.0% and 7.6% reported mild, moderate and severe pain, respectively. At least one basic activity of daily living (ADL) limitation was identified in 17.7% of participants. These descriptive characteristics provide context for interpreting the subsequent weighted analyses.
 ```{r cohort-characteristics}
 characteristics <- data.frame(
   Characteristic = c(
@@ -681,8 +680,6 @@ characteristics <- data.frame(
 ADL limitation prevalence increased across pain categories. Unweighted prevalence was 5.7% among respondents not often troubled by pain, compared with 16.1%, 33.7% and 62.7% among those reporting mild, moderate and severe pain, respectively. Corresponding survey-weighted estimates were 5.4%, 15.2%, 35.8% and 62.8%.
 
 Exploratory weighted logistic regression, adjusted for age and sex, demonstrated increasing odds of ADL limitation relative to respondents not often troubled by pain (mild: OR 3.28; moderate: OR 9.31; severe: OR 31.00). These odds ratios should not be interpreted as relative risks.
-
-The findings demonstrate the ARD's suitability for descriptive comparisons and exploratory modelling. However, cross-sectional data, potential residual confounding and incomplete incorporation of ELSA's complex survey design limit causal and population-level inference.
 
 ```{r pain-adl-table}
 pain_levels <- c(
@@ -846,8 +843,7 @@ ard$pain_category <- factor(
   )
 )
 
-ard$sex <- factor(ard$sex)
-
+ard$sex <- factor(ard$sex, levels = c("Female", "Male"))
 weighted_model <- glm(
   adl_limitation ~ pain_category + age + sex,
   data = ard,
@@ -856,7 +852,12 @@ weighted_model <- glm(
 )
 ```
 
+
 ```{r regression-table}
+# Extract model coefficients and standard errors
+model_summary <- summary(weighted_model)$coefficients
+
+# Calculate adjusted odds ratios and 95% Wald confidence intervals
 model_results <- data.frame(
   Predictor = c(
     "Mild pain vs not often troubled",
@@ -865,8 +866,13 @@ model_results <- data.frame(
     "Age (per year)",
     "Male vs female"
   ),
-  Adjusted_OR = round(
-    exp(coef(weighted_model)[-1]),
+  Adjusted_OR = round(exp(model_summary[-1, 1]), 2),
+  CI_lower = round(
+    exp(model_summary[-1, 1] - 1.96 * model_summary[-1, 2]),
+    2
+  ),
+  CI_upper = round(
+    exp(model_summary[-1, 1] + 1.96 * model_summary[-1, 2]),
     2
   )
 )
@@ -874,38 +880,43 @@ model_results <- data.frame(
 knitr::kable(
   model_results,
   row.names = FALSE,
-  col.names = c("Predictor", "Weighted adjusted OR"),
+  col.names = c(
+    "Predictor",
+    "Weighted adjusted OR",
+    "95% CI lower",
+    "95% CI upper"
+  ),
   caption = paste(
-    "Table 5. Weighted logistic regression point estimates",
-    "for ADL limitations, adjusted for age and sex."
+  "Exploratory weighted logistic regression",
+  "for ADL limitations, adjusted for age and sex.",
+  "95% Wald confidence intervals are shown."
   )
 )
 ```
 
 
+
 # Discussion
 
-This project developed a reproducible, technically validated analysis-ready dataset (ARD) from ELSA Wave 11, demonstrating the importance of explicit phenotype definitions, documented cohort selection and systematic validation in secondary health-data analysis.
+This project established a reproducible analysis-ready dataset (ARD) from ELSA Wave 11 and used it to investigate the relationship between pain severity and functional limitations. The resulting cohort of 6,169 participants passed the predefined validation checks, demonstrating the feasibility of transforming complex longitudinal survey data into a documented resource for secondary analysis.
 
-Exploratory analyses identified a graded association between reported pain severity and basic ADL limitations, consistent with previous longitudinal ELSA research linking persistent and multisite pain with functional limitations (Yiengprugsawan and Steptoe, 2018). However, differences in exposure definitions, outcomes and study design limit direct comparison. The present cross-sectional findings establish neither temporal sequence nor causality.
+A key methodological decision was to distinguish questionnaire-routing skips from genuinely invalid responses. This avoided inappropriate exclusions while ensuring consistent pain classification. Independent reconstruction of the derived phenotypes confirmed their internal consistency, although technical validation cannot establish clinical validity. The documented R Markdown workflow and data dictionary support transparency, reproducibility and future adaptation.
 
-A methodological strength was distinguishing structural questionnaire skips from genuine missingness, preventing unnecessary exclusions. Independent phenotype reconstruction showed complete agreement across 6,169 participants, supporting technical consistency rather than clinical validity. The documented R Markdown workflow and data dictionary facilitate reproducibility and scrutiny of derivation decisions.
+The secondary analysis identified a pronounced graded association between pain severity and difficulty with basic activities of daily living. Compared with respondents not often troubled by pain, the adjusted odds of reporting at least one ADL limitation were approximately 3.3 times higher with mild pain, 9.3 times higher with moderate pain and 31 times higher with severe pain, after adjustment for age and sex. These findings are consistent with previous ELSA research linking pain with functional limitations (Yiengprugsawan and Steptoe, 2018), although differences in measurement and study design prevent direct comparison. The association should not be interpreted as evidence of causation or subsequent functional decline.
 
-**Selection bias remains a concern.** Among weight-eligible respondents, 203 (3.2%) were excluded for incomplete pain information. Excluded participants were more frequently male (55.2% versus 42.4%; p < 0.001), raising concerns about representativeness, although the effect on estimated associations is unknown. Exclusion of respondents without eligible survey weights further limits the analytical population.
+Several limitations affect interpretation. Excluding respondents with ineligible weights or invalid pain responses may introduce selection bias, particularly as those excluded for incomplete pain information were more frequently male. Self-reported outcomes, age top-coding and unmeasured factors such as multimorbidity, psychological health and socioeconomic circumstances introduce further uncertainty. Additionally, the weighted regression did not account for the full complex survey design, limiting confidence in its inferential estimates.
 
-Additional limitations include self-reported measures, loss of age precision through top-coding at 90 years and potential residual confounding from unmeasured factors such as multimorbidity, psychological health and socioeconomic circumstances. Moreover, conventional weighted regression did not incorporate ELSA's full complex survey design, limiting the reliability of inferential uncertainty estimates.
+Future research should incorporate design-based survey analysis, broader confounder adjustment and sensitivity analyses of eligibility and phenotype definitions. Longitudinal follow-up could establish whether pain severity predicts subsequent functional deterioration, extending the present cross-sectional findings.
 
-**Future work** should incorporate additional confounders, design-based survey methods and sensitivity analyses of phenotype definitions and missing-data exclusions. Longitudinal linkage could investigate whether pain predicts subsequent ADL deterioration, but would require further data preparation and validation.
-
-Overall, the ARD provides a transparent foundation for exploratory analysis, while its limitations reinforce the need to distinguish technical data quality from clinical validity and population-level inference.
+The principal contribution is therefore twofold: a technically validated, reproducible research asset and an exploratory finding that greater reported pain severity is strongly associated with ADL limitation. The distinction between reliable data preparation and valid population-level inference remains essential.
 
 # Conclusion
 
-A reproducible analysis-ready dataset comprising 6,169 ELSA Wave 11 participants was developed and technically validated through explicit cohort-selection rules, careful handling of questionnaire routing and independent phenotype checks.
+A reproducible analysis-ready dataset comprising 6,169 ELSA Wave 11 participants was developed and technically validated using explicit cohort-selection rules, appropriate handling of questionnaire routing and independent phenotype checks.
 
-Exploratory weighted analyses demonstrated a graded association between reported pain severity and basic ADL limitations. However, cross-sectional measurement, potential selection bias, residual confounding and incomplete survey-design adjustment limit interpretation.
+Exploratory weighted analyses identified a strong, graded association between increasing pain severity and limitations in basic activities of daily living, after adjustment for age and sex. However, the cross-sectional design, potential selection bias, residual confounding and incomplete accounting for the complex survey design limit causal and population-level interpretation.
 
-The resulting ARD provides a transparent, documented foundation for future research, including longitudinal investigations with broader covariate adjustment and appropriate survey-design methods.
+The resulting ARD provides a transparent and documented foundation for future research, particularly longitudinal investigations incorporating broader confounder adjustment and appropriate survey-design methods.
 
 # References
 
@@ -918,7 +929,5 @@ Kawashima, A., Komatsu, A., Jin, X., Shimada, H., Arai, H. and Saito, T. (2025) 
 Makino, K., Lee, S., Bae, S., Jung, S., Shinkai, Y., Chiba, I. and Shimada, H. (2019) ‘Pain characteristics and incidence of functional disability among community-dwelling older adults’, *PLOS ONE*, 14(4), e0215467. Available at: https://doi.org/10.1371/journal.pone.0215467
 
 Steptoe, A., Breeze, E., Banks, J. and Nazroo, J. (2013) ‘Cohort profile: The English Longitudinal Study of Ageing’, *International Journal of Epidemiology*, 42(6), pp. 1640–1648. Available at: https://doi.org/10.1093/ije/dys168
-
-von Elm, E., Altman, D.G., Egger, M., Pocock, S.J., Gøtzsche, P.C. and Vandenbroucke, J.P. (2007) ‘The Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) statement: Guidelines for reporting observational studies’, *PLoS Medicine*, 4(10), e296. Available at: https://doi.org/10.1371/journal.pmed.0040296
 
 Yiengprugsawan, V. and Steptoe, A. (2018) ‘Impacts of persistent general and site-specific pain on activities of daily living and physical performance: A prospective analysis of the English Longitudinal Study of Ageing’, *Geriatrics & Gerontology International*, 18(7), pp. 1051–1057. Available at: https://doi.org/10.1111/ggi.13304
