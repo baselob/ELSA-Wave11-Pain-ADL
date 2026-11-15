@@ -29,7 +29,7 @@ install.packages(c("rmarkdown", "knitr", "haven", "ggplot2", "scales"))
 
 ## Folder structure
 
-The R Markdown workflow expects the following arrangement:
+The following folder structure must be established locally before running the analysis. The Raw data directory and original ELSA dataset are not included in this GitHub repository and must be obtained separately through authorised UK Data Service access.
 
 ```text
 MSt assignment ELSA/
@@ -50,11 +50,11 @@ The `outputs` directory is created automatically by the export code.
 1. Obtain authorised access to ELSA Wave 11 and place the source `.dta` file in the `Raw data` folder.
 2. Open the R Markdown file in RStudio.
 3. Install the required R packages if necessary.
-4. Knit the R Markdown document to HTML, or run:
+4. Knit the R Markdown document to HTML, or run the following command from RStudio. Set the working directory to the repository root first:
 
-```r
-rmarkdown::render("ELSA_MSt_Assignment/Mst assignment.Rmd", knit_root_dir = "ELSA_MSt_Assignment")
-```
+   ```r
+   rmarkdown::render("ELSA_MSt_Assignment/Mst assignment.Rmd", knit_root_dir = "ELSA_MSt_Assignment")
+   ```
 
 5. Review the generated HTML report and the CSV files in the `outputs` folder.
 
