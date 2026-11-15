@@ -15,3 +15,4 @@ outputs/ELSA_Wave11_Pain_ADL_ARD.csv
 # Generated reports and temporary audit files
 *.html
 *_version_check.Rmd
+.Rproj.user
