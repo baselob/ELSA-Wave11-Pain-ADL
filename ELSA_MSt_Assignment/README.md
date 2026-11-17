@@ -33,11 +33,12 @@ The R Markdown workflow expects the following arrangement:
 
 ```text
 MSt assignment ELSA/
+├── README.md
 ├── Raw data/
 │   └── wave_11_elsa_data_eul.dta
 └── ELSA_MSt_Assignment/
-    ├── Mst assignment.Rmd
-    ├── README.md
+    ├── HDS_M1_BaselObeidat_2611.Rmd
+    ├── ELSA_Synthetic_Reproducibility_Demonstration.Rmd
     ├── ELSA_Wave11_Pain_ADL_SYNTHETIC.csv
     └── outputs/
         ├── ELSA_Wave11_Pain_ADL_ARD.csv
@@ -54,7 +55,7 @@ The `outputs` directory is created automatically by the export code.
 4. Knit the R Markdown document to HTML, or run:
 
 ```r
-rmarkdown::render("Mst assignment.Rmd")
+rmarkdown::render("ELSA_MSt_Assignment/HDS_M1_BaselObeidat_2611.Rmd", knit_root_dir = "ELSA_MSt_Assignment")
 ```
 
 5. Review the generated HTML report and the CSV files in the `outputs` folder.
@@ -96,3 +97,11 @@ The analysis is cross-sectional. Weighted regression is exploratory and does not
 Participant-level data and derived outputs must be handled according to the UK Data Service End User Licence and applicable confidentiality requirements. Do not publicly distribute the source data or participant-level ARD without confirming that redistribution is authorised.
 
 The R Markdown source, methodological documentation and data dictionary can be reviewed separately from restricted participant-level data, subject to any applicable disclosure requirements.
+
+## GitHub repository
+
+The reproducibility code, metadata, documentation and synthetic demonstration materials are available at:
+
+https://github.com/baselob/ELSA-Wave11-Pain-ADL
+
+The restricted ELSA source data and participant-level analysis-ready dataset are not publicly distributed.
