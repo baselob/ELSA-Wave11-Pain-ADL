@@ -19,18 +19,25 @@ knitr::opts_chunk$set(
 
 ## Cambridge Assignment Cover Sheet
 
-![](coversheet_1.png)
 
-![](coversheet_2.png)
+```{r submission-documents, echo=FALSE, results='asis'}
+coversheets <- paste0("coversheet_", 1:4, ".png")
 
-![](coversheet_3.png)
+if (all(file.exists(coversheets))) {
+  cat("\n\n## Cambridge Assignment Cover Sheet\n\n")
+  for (img in coversheets) {
+    cat(sprintf("![](%s)\n\n", img))
+  }
+}
 
-![](coversheet_4.png)
+certificate <- "Safe_Researcher_Certificate.png"
 
-## Safe Researcher Training Certificate {-}
-```{r safe-researcher-certificate, echo=FALSE, out.width='85%', fig.align='center'}
-knitr::include_graphics("Safe_Researcher_Certificate.png")
+if (file.exists(certificate)) {
+  cat("\n\n## Safe Researcher Training Certificate {-}\n\n")
+  cat(sprintf("![](%s){width=85%%}\n\n", certificate))
+}
 ```
+
 
 # Abstract
 
